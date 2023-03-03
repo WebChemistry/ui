@@ -1,0 +1,16 @@
+{
+    "name": "webchemistry/ui",
+    "require": {
+        "php": ">= 8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "WebChemistry\\UI\\": "src"
+        }
+    },
+    "require-dev": {
+        "phpstan/phpstan": "^1.10",
+        "latte/latte": "^3.0",
+        "nette/application": "^3.1"
+    }
+}

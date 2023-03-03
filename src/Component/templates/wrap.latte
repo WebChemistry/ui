@@ -1,0 +1,9 @@
+{php $container?->render($this, ['start' => true])}
+
+	{foreach $components as $component}
+		{php $component->render($this)}
+
+		{sep}{php $separator?->render($this)}{/sep}
+	{/foreach}
+
+{php $container?->render($this, ['end' => true])}
