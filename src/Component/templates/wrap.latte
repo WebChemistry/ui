@@ -1,9 +1,11 @@
-{php $container?->render($this, ['start' => true])}
+{if $container}{control $container $this, ['start' => true]}{/if}
 
 	{foreach $components as $component}
-		{php $component->render($this)}
+		{control $component $this}
 
-		{sep}{php $separator?->render($this)}{/sep}
+		{if $separator}
+			{sep}{control $separator $this}{/sep}
+		{/if}
 	{/foreach}
 
-{php $container?->render($this, ['end' => true])}
+{if $container}{control $container $this, ['end' => true]}{/if}

@@ -5,8 +5,9 @@ namespace WebChemistry\UI\Renderable;
 use Latte\Runtime\Template;
 use LogicException;
 use Nette\Application\UI\Control;
+use Nette\Application\UI\Renderable as UIRenderable;
 
-final class ControlToRender implements Renderable
+final class ControlToRender implements Renderable, UIRenderable
 {
 
 	/**
@@ -18,6 +19,16 @@ final class ControlToRender implements Renderable
 		private array $arguments = [],
 	)
 	{
+	}
+
+	public function redrawControl(?string $snippet = null, bool $redraw = true): void
+	{
+		$this->control->redrawControl($snippet, $redraw);
+	}
+
+	public function isControlInvalid(): bool
+	{
+		return $this->control->isControlInvalid();
 	}
 
 	public function install(Control $control): void
