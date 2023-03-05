@@ -47,7 +47,7 @@ final class CollectionComponent extends Control
 		/** @var Template $template */
 		$template = $this->getTemplate();
 
-		$template->render(__DIR__ . '/templates/wrap.latte', [
+		$template->render(__DIR__ . '/templates/collection.latte', [
 			'components' => $this->components,
 			'container' => $this->container,
 			'separator' => $this->separator,
