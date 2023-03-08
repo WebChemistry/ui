@@ -11,6 +11,8 @@
     "require-dev": {
         "phpstan/phpstan": "^1.10",
         "latte/latte": "^3.0",
-        "nette/application": "^3.1"
+        "nette/application": "^3.1",
+        "nette/di": "^3.1",
+        "doctrine/orm": "^2.14"
     }
 }
