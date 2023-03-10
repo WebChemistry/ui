@@ -5,6 +5,7 @@ namespace WebChemistry\UI\Application;
 use Nette\Application\UI\Component;
 use Nette\ComponentModel\IComponent;
 use WebChemistry\UI\Application\Serializer\MultiplierSerializer;
+use WebChemistry\UI\Application\Serializer\NativeMultiplierSerializer;
 
 /**
  * @template T
@@ -15,16 +16,20 @@ final class Multiplier extends Component
 	/** @var callable(string, Multiplier<T>=): ?IComponent */
 	private $factory;
 
+	/** @var MultiplierSerializer<T> */
+	private MultiplierSerializer $serializer;
+
 	/**
 	 * @param callable(string, Multiplier<T>=): ?IComponent $factory
-	 * @param MultiplierSerializer<T> $serializer
+	 * @param MultiplierSerializer<T>|null $serializer
 	 */
 	public function __construct(
 		callable $factory,
-		private MultiplierSerializer $serializer,
+		?MultiplierSerializer $serializer,
 	)
 	{
 		$this->factory = $factory;
+		$this->serializer = $serializer ?? new NativeMultiplierSerializer(); // @phpstan-ignore-line
 	}
 
 	public function get(mixed $value): IComponent
