@@ -32,6 +32,9 @@ final class Multiplier extends Component
 		$this->serializer = $serializer ?? new NativeMultiplierSerializer(); // @phpstan-ignore-line
 	}
 
+	/**
+	 * @param T $value
+	 */
 	public function get(mixed $value): IComponent
 	{
 		/** @var IComponent */
