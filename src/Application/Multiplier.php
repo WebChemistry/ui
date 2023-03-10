@@ -25,7 +25,7 @@ final class Multiplier extends Component
 	 */
 	public function __construct(
 		callable $factory,
-		?MultiplierSerializer $serializer,
+		?MultiplierSerializer $serializer = null,
 	)
 	{
 		$this->factory = $factory;
