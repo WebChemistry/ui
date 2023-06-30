@@ -5,6 +5,7 @@ namespace WebChemistry\UI\Renderable;
 use Latte\Runtime\Template;
 use Nette\Application\UI\Control;
 use Nette\Utils\Html;
+use WebChemistry\UI\Template\TemplateOptions;
 
 final class HtmlToRender implements Renderable
 {
@@ -19,17 +20,16 @@ final class HtmlToRender implements Renderable
 	{
 	}
 
-	public function render(Template $template, array $options = []): void
+	public function render(Template $template, TemplateOptions $options): void
 	{
-		if (($options['start'] ?? false) === true) {
+		if ($options->isStartTag()) {
 			echo $this->html->startTag();
 
-		} else if (($options['end'] ?? false) === true) {
+		} else if ($options->isEndTag()) {
 			echo $this->html->endTag();
 
 		} else {
-			echo $this->html;
-
+			echo $options->applyHooks(fn () => $this->html->toHtml());
 		}
 	}
 

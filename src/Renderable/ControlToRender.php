@@ -6,6 +6,7 @@ use Latte\Runtime\Template;
 use LogicException;
 use Nette\Application\UI\Control;
 use Nette\Application\UI\Renderable as UIRenderable;
+use WebChemistry\UI\Template\TemplateOptions;
 
 final class ControlToRender implements Renderable, UIRenderable
 {
@@ -36,10 +37,7 @@ final class ControlToRender implements Renderable, UIRenderable
 		$control->addComponent($this->control, $this->name);
 	}
 
-	/**
-	 * @param mixed[] $options
-	 */
-	public function render(Template $template, array $options = []): void
+	public function render(Template $template, TemplateOptions $options): void
 	{
 		$this->control->redrawControl(null, false);
 
@@ -47,7 +45,7 @@ final class ControlToRender implements Renderable, UIRenderable
 			throw new LogicException(sprintf('Control %s does not have method render.', $this->control::class));
 		}
 
-		$this->control->render(... $this->arguments);
+		$options->applyHooks(fn () => $this->control->render(...$this->arguments));
 	}
 
 }

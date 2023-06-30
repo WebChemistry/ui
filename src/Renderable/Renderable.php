@@ -4,15 +4,13 @@ namespace WebChemistry\UI\Renderable;
 
 use Latte\Runtime\Template;
 use Nette\Application\UI\Control;
+use WebChemistry\UI\Template\TemplateOptions;
 
 interface Renderable
 {
 
 	public function install(Control $control): void;
 
-	/**
-	 * @param mixed[] $options
-	 */
-	public function render(Template $template, array $options = []): void;
+	public function render(Template $template, TemplateOptions $options): void;
 
 }

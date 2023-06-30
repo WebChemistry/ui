@@ -1,11 +1,15 @@
-{if $container}{control $container $this, ['start' => true]}{/if}
+{php $options->initialize($this)}
+
+{if $container}{control $container $this, $options->withStartTag()}{/if}
 
 	{foreach $components as $component}
-		{control $component $this}
+		{control $component $this, $options}
 
 		{if $separator}
-			{sep}{control $separator $this}{/sep}
+			{sep}{control $separator $this, $options}{/sep}
 		{/if}
 	{/foreach}
 
-{if $container}{control $container $this, ['end' => true]}{/if}
+	{php $options->finalize($this)}
+
+{if $container}{control $container $this, $options->withEndTag()}{/if}

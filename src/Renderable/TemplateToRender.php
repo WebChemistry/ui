@@ -4,6 +4,7 @@ namespace WebChemistry\UI\Renderable;
 
 use Latte\Runtime\Template;
 use Nette\Application\UI\Control;
+use WebChemistry\UI\Template\TemplateOptions;
 
 final class TemplateToRender implements Renderable
 {
@@ -22,12 +23,9 @@ final class TemplateToRender implements Renderable
 	{
 	}
 
-	/**
-	 * @param mixed[] $options
-	 */
-	public function render(Template $template, array $options = []): void
+	public function render(Template $template, TemplateOptions $options): void
 	{
-		$template->getEngine()->render($this->template, $this->params);
+		$options->applyHooks(fn () => $template->getEngine()->render($this->template, $this->params));
 	}
 
 }
