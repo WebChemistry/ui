@@ -62,7 +62,7 @@ final class CollectionComponent extends Control
 
 				$rendered = true;
 
-			} else if (!$rendered && $args->counter === null) {
+			} else if ($args->counter === null) {
 				$args->options->render($renderable);
 
 				$rendered = true;
@@ -73,7 +73,7 @@ final class CollectionComponent extends Control
 	}
 
 	/**
-	 * @param array<callable(BeforeRenderHookArguments): void> $callback
+	 * @param callable(BeforeRenderHookArguments): void $callback
 	 * @return static
 	 */
 	public function addBeforeRenderHook(callable $callback): static
@@ -84,7 +84,7 @@ final class CollectionComponent extends Control
 	}
 
 	/**
-	 * @param array<callable(AfterRenderHookArguments): void> $callback
+	 * @param callable(AfterRenderHookArguments): void $callback
 	 * @return static
 	 */
 	public function addAfterRenderHook(callable $callback): static
