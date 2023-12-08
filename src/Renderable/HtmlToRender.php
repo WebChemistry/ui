@@ -20,7 +20,7 @@ final class HtmlToRender implements Renderable
 	{
 	}
 
-	public function render(Template $template, TemplateOptions $options): void
+	public function render(Template $template, TemplateOptions $options, bool $core = false): void
 	{
 		if ($options->isStartTag()) {
 			echo $this->html->startTag();
@@ -29,7 +29,7 @@ final class HtmlToRender implements Renderable
 			echo $this->html->endTag();
 
 		} else {
-			echo $options->applyHooks(fn () => $this->html->toHtml());
+			echo $options->applyHooks(fn () => $this->html->toHtml(), $core);
 		}
 	}
 

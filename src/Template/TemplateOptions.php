@@ -44,6 +44,8 @@ final class TemplateOptions
 	{
 		$clone = clone $this;
 		$clone->startTag = true;
+		$clone->beforeRenderHooks = [];
+		$clone->afterRenderHooks = [];
 
 		return $clone;
 	}
@@ -52,6 +54,8 @@ final class TemplateOptions
 	{
 		$clone = clone $this;
 		$clone->endTag = true;
+		$clone->beforeRenderHooks = [];
+		$clone->afterRenderHooks = [];
 
 		return $clone;
 	}
@@ -71,8 +75,12 @@ final class TemplateOptions
 	 * @param callable(): TReturn $callback
 	 * @return TReturn
 	 */
-	public function applyHooks(callable $callback): mixed
+	public function applyHooks(callable $callback, bool $core = false): mixed
 	{
+		if (!$core) {
+			return $callback();
+		}
+
 		$this->counter++;
 
 		$this->beforeRender($this->counter);

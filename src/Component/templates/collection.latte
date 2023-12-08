@@ -3,7 +3,7 @@
 {if $container}{control $container $this, $options->withStartTag()}{/if}
 
 	{foreach $components as $component}
-		{control $component $this, $options}
+		{control $component $this, $options, true}
 
 		{if $separator}
 			{sep}{control $separator $this, $options}{/sep}

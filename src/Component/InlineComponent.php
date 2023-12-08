@@ -21,7 +21,7 @@ final class InlineComponent extends Control
 	public function render(): void {
 		/** @var Template $template */
 		$template = $this->createTemplate();
-		
+
 		$template->render($this->templateFile, $this->parameters);
 	}
 

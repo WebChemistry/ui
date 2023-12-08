@@ -23,9 +23,9 @@ final class TemplateToRender implements Renderable
 	{
 	}
 
-	public function render(Template $template, TemplateOptions $options): void
+	public function render(Template $template, TemplateOptions $options, bool $core = false): void
 	{
-		$options->applyHooks(fn () => $template->getEngine()->render($this->template, $this->params));
+		$options->applyHooks(fn () => $template->getEngine()->render($this->template, $this->params), $core);
 	}
 
 }

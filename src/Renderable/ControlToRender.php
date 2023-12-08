@@ -37,7 +37,7 @@ final class ControlToRender implements Renderable, UIRenderable
 		$control->addComponent($this->control, $this->name);
 	}
 
-	public function render(Template $template, TemplateOptions $options): void
+	public function render(Template $template, TemplateOptions $options, bool $core = false): void
 	{
 		$this->control->redrawControl(null, false);
 
@@ -45,7 +45,7 @@ final class ControlToRender implements Renderable, UIRenderable
 			throw new LogicException(sprintf('Control %s does not have method render.', $this->control::class));
 		}
 
-		$options->applyHooks(fn () => $this->control->render(...$this->arguments));
+		$options->applyHooks(fn () => $this->control->render(...$this->arguments), $core);
 	}
 
 }
