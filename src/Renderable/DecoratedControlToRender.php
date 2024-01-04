@@ -19,6 +19,7 @@ final class DecoratedControlToRender implements Renderable
 		private Control $control,
 		private Html $html,
 		private array $arguments = [],
+		private ?string $renderMethod = null,
 	)
 	{
 	}
@@ -40,16 +41,18 @@ final class DecoratedControlToRender implements Renderable
 
 	public function render(Template $template, TemplateOptions $options, bool $core = false): void
 	{
-		$this->control->redrawControl(null, false);
+		$method = sprintf('render%s', ucfirst($this->renderMethod ?? ''));
 
-		if (!method_exists($this->control, 'render')) {
-			throw new LogicException(sprintf('Control %s does not have method render.', $this->control::class));
+		if (!method_exists($this->control, $method)) {
+			throw new LogicException(sprintf('Control %s does not have method %s.', $this->control::class, $method));
 		}
 
-		$options->applyHooks(function () {
+		$this->control->redrawControl(null, false);
+
+		$options->applyHooks(function () use ($method) {
 			echo $this->html->startTag();
 
-			$this->control->render(...$this->arguments);
+			$this->control->$method(...$this->arguments);
 
 			echo $this->html->endTag();
 		}, $core);

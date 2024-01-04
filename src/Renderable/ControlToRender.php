@@ -18,6 +18,7 @@ final class ControlToRender implements Renderable, UIRenderable
 		private string $name,
 		private Control $control,
 		private array $arguments = [],
+		private ?string $renderMethod = null,
 	)
 	{
 	}
@@ -39,13 +40,15 @@ final class ControlToRender implements Renderable, UIRenderable
 
 	public function render(Template $template, TemplateOptions $options, bool $core = false): void
 	{
-		$this->control->redrawControl(null, false);
+		$method = sprintf('render%s', ucfirst($this->renderMethod ?? ''));
 
-		if (!method_exists($this->control, 'render')) {
+		if (!method_exists($this->control, $method)) {
 			throw new LogicException(sprintf('Control %s does not have method render.', $this->control::class));
 		}
 
-		$options->applyHooks(fn () => $this->control->render(...$this->arguments), $core);
+		$this->control->redrawControl(null, false);
+
+		$options->applyHooks(fn () => $this->control->$method(...$this->arguments), $core);
 	}
 
 }
