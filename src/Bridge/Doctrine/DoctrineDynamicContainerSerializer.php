@@ -2,6 +2,7 @@
 
 namespace WebChemistry\UI\Bridge\Doctrine;
 
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\ORM\EntityManagerInterface;
 use InvalidArgumentException;
 use WebChemistry\UI\Container\DynamicContainerSerializer;
@@ -13,8 +14,6 @@ use WebChemistry\UI\Container\DynamicContainerSerializer;
 final class DoctrineDynamicContainerSerializer implements DynamicContainerSerializer
 {
 
-	private const ListDelimiter = '__d__';
-
 	/** @var string[] */
 	private array $ids;
 
@@ -25,6 +24,7 @@ final class DoctrineDynamicContainerSerializer implements DynamicContainerSerial
 		private string $entityClass,
 		private EntityManagerInterface $em,
 		private bool $convertDashToUnderscore = false,
+		private string $delimiter = '__d__',
 	)
 	{
 	}
@@ -45,29 +45,44 @@ final class DoctrineDynamicContainerSerializer implements DynamicContainerSerial
 			);
 		}
 
-		$metadata = $this->em->getClassMetadata($this->entityClass);
-		$idValues = $metadata->getIdentifierValues($value);
+		return implode($this->delimiter, $this->getIdentifiers($value));
+	}
+
+	/**
+	 * @return string[]
+	 */
+	private function getIdentifiers(object $entity): array
+	{
+		$metadata = $this->em->getClassMetadata($className = ClassUtils::getClass($entity));
+		$idValues = $metadata->getIdentifierValues($entity);
 
 		$values = [];
-		foreach ($this->getIdNames() as $id) {
-			if (!is_scalar($idValues[$id])) {
-				throw new InvalidArgumentException(sprintf('Identifier %s is not scalar.', $id));
+		foreach ($this->getIdNames($className) as $id) {
+			$value = $idValues[$id];
+			if (!is_scalar($value)) {
+				if (is_object($value)) {
+					$values = array_merge($values, $this->getIdentifiers($value));
+
+					continue;
+				}
+
+				throw new InvalidArgumentException(sprintf('Identifier %s is not scalar, %s given.', $id, get_debug_type($value)));
 			}
 
-			$idValue = (string) $idValues[$id];
+			$value = (string) $value;
 
 			if ($this->convertDashToUnderscore) {
-				$idValue = str_replace('-', '_', $idValue);
-			} else if (str_contains($idValue, '-')) {
+				$value = str_replace('-', '_', $value);
+			} else if (str_contains($value, '-')) {
 				throw new InvalidArgumentException(
-					sprintf('Value %s contains dash, but convertDashToUnderscore is set to false.', $idValue),
+					sprintf('Value %s contains dash, but convertDashToUnderscore is set to false.', $value),
 				);
 			}
 
-			$values[] = $idValue;
+			$values[] = $value;
 		}
 
-		return implode(self::ListDelimiter, $values);
+		return $values;
 	}
 
 	/**
@@ -81,7 +96,7 @@ final class DoctrineDynamicContainerSerializer implements DynamicContainerSerial
 			return [$ids[0] => $name];
 		}
 
-		$values = explode(self::ListDelimiter, $name);
+		$values = explode($this->delimiter, $name);
 
 		if (count($ids) !== count($values)) {
 			throw new InvalidArgumentException(
@@ -93,10 +108,19 @@ final class DoctrineDynamicContainerSerializer implements DynamicContainerSerial
 	}
 
 	/**
+	 * @param class-string|null $className
 	 * @return string[]
 	 */
-	private function getIdNames(): array
+	private function getIdNames(?string $className = null): array
 	{
+		if ($className && $className !== $this->entityClass) {
+			$ids = $this->em->getClassMetadata($className ?? $this->entityClass)->getIdentifierFieldNames();
+
+			sort($ids, SORT_STRING);
+
+			return $ids;
+		}
+
 		if (!isset($this->ids)) {
 			$this->ids = $this->em->getClassMetadata($this->entityClass)->getIdentifierFieldNames();
 
