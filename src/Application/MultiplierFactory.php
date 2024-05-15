@@ -22,7 +22,7 @@ final class MultiplierFactory
 
 	/**
 	 * @param callable(T): Control $factory
-	 * @param iterable<MultiplierCached<T>> $cache
+	 * @param iterable<MultiplierCached<T>|T> $cache
 	 * @return Multiplier<T>
 	 */
 	public function create(callable $factory, iterable $cache = []): Multiplier
@@ -34,7 +34,11 @@ final class MultiplierFactory
 		}, $this->serializer);
 
 		foreach ($cache as $item) {
-			$multiplier->addComponent($item->control, $this->serializer->serialize($item->value));
+			if ($item instanceof MultiplierCached) {
+				$multiplier->addComponent($item->control, $this->serializer->serialize($item->value));
+			} else {
+				$multiplier->addComponent($factory($item), $this->serializer->serialize($item));
+			}
 		}
 
 		return $multiplier;
