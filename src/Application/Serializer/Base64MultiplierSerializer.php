@@ -14,7 +14,6 @@ final class Base64MultiplierSerializer implements MultiplierSerializer
 
 	public function serialize(mixed $value): string
 	{
-
 		if (is_scalar($value) || $value instanceof Stringable) {
 			$value = (string) $value;
 			$code = '0';
