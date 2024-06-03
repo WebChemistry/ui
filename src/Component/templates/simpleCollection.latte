@@ -1,3 +1,5 @@
-{foreach $components as $component}
-	{control $component}
-{/foreach}
+{$wrapper?->startTag()|noescape}
+	{foreach $components as $component}
+		{control $component}
+	{/foreach}
+{$wrapper?->endTag()|noescape}
