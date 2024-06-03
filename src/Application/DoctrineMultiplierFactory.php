@@ -20,12 +20,12 @@ final class DoctrineMultiplierFactory
 	 * @template T of object
 	 * @param class-string<T> $className
 	 * @param callable(T): Control $factory
-	 * @param iterable<MultiplierCached<T>> $cache
+	 * @param iterable<MultiplierCached<T>|T> $cache
 	 * @return Multiplier<T>
 	 */
-	public function create(string $className, callable $factory, iterable $cache = [], bool $base64 = false): Multiplier
+	public function create(string $className, callable $factory, iterable $cache = []): Multiplier
 	{
-		$multiplierFactory = new MultiplierFactory(new DoctrineMultiplierSerializer($className, $this->em, $base64));
+		$multiplierFactory = new MultiplierFactory(new DoctrineMultiplierSerializer($className, $this->em));
 
 		return $multiplierFactory->create($factory, $cache);
 	}
